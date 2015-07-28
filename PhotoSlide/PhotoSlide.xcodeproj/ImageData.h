@@ -11,8 +11,6 @@
 
 @interface ImageData : NSObject
 
-@property (nonatomic) NSInteger count;
-
 + (instancetype) sharedImageData;
 
 @end
