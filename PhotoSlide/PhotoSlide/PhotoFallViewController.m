@@ -16,7 +16,7 @@
 
 @property (strong, nonatomic) id<UICollectionViewDataSource> dataSource;
 @property (strong, nonatomic) id<UICollectionViewDelegate> delegate;
-@property (strong, nonatomic) PhotoFallLayout* fallLayout;
+@property (strong, nonatomic) PhotoFallLayout* photoFallLayout;
 @property (strong, nonatomic) ImageData* imageData;
 
 @end
@@ -34,13 +34,13 @@
     if (self) {
         self.imageData = [ImageData sharedImageData];
         
-        CGRect frame = CGRectMake(4,6 + [Common globalStatusBarHeight], [Common globalWidth]-10, self.viewHeight - 6);
+        CGRect frame = CGRectMake(4,4 + [Common globalStatusBarHeight], [Common globalWidth]-10, self.viewHeight - 4);
         
         NSLog(@"before collectionView initWithFrame");
         //初始化layout
-        PhotoFallLayout *photoFallLayout = [[PhotoFallLayout alloc] init];
+        _photoFallLayout = [[PhotoFallLayout alloc] init];
         
-        self.collectionView = [[UICollectionView alloc] initWithFrame:frame collectionViewLayout:photoFallLayout];
+        self.collectionView = [[UICollectionView alloc] initWithFrame:frame collectionViewLayout:_photoFallLayout];
         
         //初始化cell
         [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"PHOTO_FALL_CELL_IDENTIFIER"];
@@ -95,7 +95,11 @@
 - (NSInteger)collectionView:(UICollectionView *)collectionView
      numberOfItemsInSection:(NSInteger)section {
     NSLog(@"imageHeights.count as numberOfItemsInSection=%lu, thread=%@", (unsigned long)[self.imageData.imageHeights count], [NSThread currentThread]);
-    return [self.imageData.imageHeights count];
+    
+    NSInteger count = [self.imageData.imageHeights count];
+    [_photoFallLayout setCurrentCellCount: count];
+    
+    return count;
 }
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView {

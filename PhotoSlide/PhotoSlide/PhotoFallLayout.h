@@ -10,7 +10,7 @@
 
 @interface PhotoFallLayout : UICollectionViewLayout
 
-@property (nonatomic) NSInteger cellCount;
+@property (atomic) NSInteger currentCellCount;
 @property (nonatomic) UIEdgeInsets inset;
 @property (nonatomic) CGFloat itermWidth;
 @property (nonatomic) CGFloat itermSpace;

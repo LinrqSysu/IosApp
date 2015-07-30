@@ -15,6 +15,7 @@
 @interface AppDelegate ()
 @property (strong, nonatomic) NSURLSession *flickrDownloadSession;
 @property (strong, nonatomic) NSMutableArray *photoList;
+@property (atomic) int activeNetCount;
 @end
 
 @implementation AppDelegate
@@ -40,10 +41,9 @@
 
 - (void) beginBackgroundDownload
 {
-    NSLog(@"begin background download");
     //先开启后台下载
-    
     NSLog(@"begin startFlickrFetch");
+    _activeNetCount = 0;
     // getTasksWithCompletionHandler: is ASYNCHRONOUS
     // but that's okay because we're not expecting startFlickrFetch to do anything synchronously anyway
     [self.flickrDownloadSession getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
@@ -52,6 +52,10 @@
             // ... not working on a fetch, let's start one up
             NSURLSessionDownloadTask *task = [self.flickrDownloadSession downloadTaskWithURL:[FlickrFetcher URLforRecentGeoreferencedPhotos]];
             task.taskDescription = FLICKR_FETCH_LIST;
+            
+            _activeNetCount++;
+            [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+            
             [task resume];
             
             NSLog(@"begin downloadtask with image list");
@@ -128,6 +132,10 @@
         NSURL* url = [NSURL URLWithString:imageUrl];
         NSURLSessionDownloadTask *task = [self.flickrDownloadSession downloadTaskWithURL:url];
         task.taskDescription = [unique stringByAppendingString: FLICKR_FETCH_IMAGE];
+        
+        _activeNetCount++;
+       [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+        
         [task resume];
     }
 }
@@ -137,8 +145,11 @@
 didFinishDownloadingToURL:(NSURL *)localFile
 {
     // we shouldn't assume we're the only downloading going on ...
-    if ([downloadTask.taskDescription isEqualToString:FLICKR_FETCH_LIST]) {
+    if ([downloadTask.taskDescription isEqualToString:FLICKR_FETCH_LIST])
+    {
+        _activeNetCount--;
         
+        [_photoList removeAllObjects];
         _photoList = [[self flickrPhotosAtURL:localFile] mutableCopy];
         
         NSLog(@"image list download back, first time download image");
@@ -157,6 +168,7 @@ didFinishDownloadingToURL:(NSURL *)localFile
         NSString *savePath = [NSString stringWithFormat:@"%@/%@", self.imageDirectory, unique];
         
         //NSLog(@"unique=%@, savePath=%@", unique, savePath);
+        _activeNetCount--;
         
         NSError *mvError = nil;
         [[NSFileManager defaultManager] moveItemAtPath:[localFile path] toPath:savePath error:&mvError];
@@ -167,6 +179,15 @@ didFinishDownloadingToURL:(NSURL *)localFile
         {
             [[ImageData sharedImageData] saveFile:savePath];
         }
+    }
+    
+    if( _activeNetCount > 0 )
+    {
+       [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
+    }
+    else
+    {
+       [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
     }
 }
 

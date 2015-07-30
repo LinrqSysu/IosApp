@@ -63,7 +63,7 @@
     UIEdgeInsets inset = GLOBAL_INSET;
     int itermSpace = GLOBAL_ITEM_SPACE;
     int itermWidth = ([Common globalWidth] - inset.left - inset.right - 2 * itermSpace) / 3; // cell宽度
-    NSNumber *zoomOutHeight = [NSNumber numberWithFloat:(image.size.height / image.size.width ) * itermWidth];
+    NSNumber *zoomOutHeight = [NSNumber numberWithFloat:(image.size.height / image.size.width ) * itermWidth + arc4random_uniform(80)];
     if (self.imageHeights)
     {
         [self.imageHeights addObject:zoomOutHeight];

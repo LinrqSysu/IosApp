@@ -11,7 +11,6 @@
 #import "PhotoFallLayout.h"
 
 @implementation PhotoFallLayout
-@synthesize cellCount;
 @synthesize inset;
 @synthesize itermWidth;
 @synthesize itermSpace;
@@ -21,7 +20,6 @@
     [super prepareLayout];
     
     // 初始化参数
-    cellCount = [self.collectionView numberOfItemsInSection:0]; // cell个数，直接从collectionView中获得
     inset = GLOBAL_INSET;
     itermSpace = GLOBAL_ITEM_SPACE;
     itermWidth = ([Common globalWidth] - inset.left - inset.right - 2 * itermSpace) / 3; // cell宽度
@@ -37,8 +35,8 @@
     
     NSLog(@"begin prepareLayout, imageHeights.count=%lu", [[ImageData sharedImageData].imageHeights count]);
     self.maxHeight = self.collectionView.frame.size.height;
-    NSUInteger count = [[ImageData sharedImageData].imageHeights count];
-    for ( NSUInteger i = 0; i < count; i++)
+    //NSUInteger count = [[ImageData sharedImageData].imageHeights count];
+    for ( NSUInteger i = 0; i < _currentCellCount; i++)
     {
         if (i < 3) [self.cellY addObject:[NSNumber numberWithFloat:self.inset.top]];
         else
