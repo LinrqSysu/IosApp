@@ -29,4 +29,8 @@
     return [UIColor colorWithRed:200.0/255 green:202.0/255 blue:204.0/255 alpha:1];
 }
 
++ (CGFloat) globalImageWidth{
+    return ([[UIScreen mainScreen] bounds].size.width - (IMAGE_COUNT_PER_ROW  * IMAGE_INTERVAL));
+}
+
 @end

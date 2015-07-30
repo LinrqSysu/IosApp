@@ -7,7 +7,10 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "NotifyProtocol.h"
 
-@interface PhotoFallViewController : UIViewController
+@interface PhotoFallViewController : UICollectionViewController<DownloadNotify,UICollectionViewDelegate, UICollectionViewDataSource>
 @property (nonatomic) CGFloat viewHeight;
+@property (strong, nonatomic) UICollectionView* fallView;
+-(void) notifyDownloadFinished:(NSError *)error;
 @end

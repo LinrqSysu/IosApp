@@ -8,11 +8,18 @@
 
 #import <Foundation/Foundation.h>
 #import <UIKit/UIKit.h>
+#import "NotifyProtocol.h"
 
 @interface ImageData : NSObject
 
+@property (strong, atomic) NSMutableArray* imageUrls;
+@property (strong, atomic) NSMutableArray *imageHeights;
+@property (strong, nonatomic) NSMutableArray *notifyDelegates;
 @property (nonatomic) NSInteger count;
 
 + (instancetype) sharedImageData;
 
+- (UIImageView*) imageAtIndex: (NSInteger)index CellSize:(CGRect) bounds;
+- (void) saveFile: (NSString*) savePath;
+- (void)subscribe:(id)observer;
 @end

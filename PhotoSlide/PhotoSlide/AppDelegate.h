@@ -14,5 +14,7 @@
 
 @property (strong, nonatomic) UITabBarController *rootController;
 
+@property (strong, nonatomic) NSString *imageDirectory;
+
 @end
 

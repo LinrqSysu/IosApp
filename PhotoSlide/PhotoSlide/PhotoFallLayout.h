@@ -11,7 +11,11 @@
 @interface PhotoFallLayout : UICollectionViewLayout
 
 @property (nonatomic) NSInteger cellCount;
-@property (nonatomic) NSInteger inset;
+@property (nonatomic) UIEdgeInsets inset;
 @property (nonatomic) CGFloat itermWidth;
+@property (nonatomic) CGFloat itermSpace;
+@property (nonatomic) CGFloat maxHeight;
+@property (strong, atomic) NSMutableArray *cellY;
+
 
 @end

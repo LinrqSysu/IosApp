@@ -17,6 +17,9 @@
 		7E056E401B6236E5007513EF /* PhotoFallViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E056E3F1B6236E5007513EF /* PhotoFallViewController.m */; };
 		7E056E431B623705007513EF /* PhotoWallViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E056E421B623705007513EF /* PhotoWallViewController.m */; };
 		7E056E461B623FB9007513EF /* UITabBarController+MyTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E056E451B623FB9007513EF /* UITabBarController+MyTabBarController.m */; };
+		7E056E491B660D11007513EF /* PhotoFallLayout.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E056E481B660D11007513EF /* PhotoFallLayout.m */; };
+		7E056E511B67217B007513EF /* ImageData.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E056E501B67217B007513EF /* ImageData.m */; };
+		7E056E5D1B678986007513EF /* FlickrFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E056E5C1B678986007513EF /* FlickrFetcher.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +53,14 @@
 		7E056E421B623705007513EF /* PhotoWallViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoWallViewController.m; sourceTree = "<group>"; };
 		7E056E441B623FB9007513EF /* UITabBarController+MyTabBarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UITabBarController+MyTabBarController.h"; sourceTree = "<group>"; };
 		7E056E451B623FB9007513EF /* UITabBarController+MyTabBarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UITabBarController+MyTabBarController.m"; sourceTree = "<group>"; };
+		7E056E471B660D11007513EF /* PhotoFallLayout.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoFallLayout.h; sourceTree = "<group>"; };
+		7E056E481B660D11007513EF /* PhotoFallLayout.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoFallLayout.m; sourceTree = "<group>"; };
+		7E056E4F1B67217B007513EF /* ImageData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageData.h; sourceTree = "<group>"; };
+		7E056E501B67217B007513EF /* ImageData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageData.m; sourceTree = "<group>"; };
+		7E056E5A1B678986007513EF /* FlickrAPIKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlickrAPIKey.h; sourceTree = "<group>"; };
+		7E056E5B1B678986007513EF /* FlickrFetcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlickrFetcher.h; sourceTree = "<group>"; };
+		7E056E5C1B678986007513EF /* FlickrFetcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlickrFetcher.m; sourceTree = "<group>"; };
+		7E056E5E1B68B291007513EF /* NotifyProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NotifyProtocol.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -91,12 +102,20 @@
 		7E056DE21B621CBD007513EF /* PhotoSlide */ = {
 			isa = PBXGroup;
 			children = (
+				7E056E5A1B678986007513EF /* FlickrAPIKey.h */,
+				7E056E5B1B678986007513EF /* FlickrFetcher.h */,
+				7E056E5C1B678986007513EF /* FlickrFetcher.m */,
 				7E056DE71B621CBD007513EF /* AppDelegate.h */,
 				7E056DE81B621CBD007513EF /* AppDelegate.m */,
 				7E056E441B623FB9007513EF /* UITabBarController+MyTabBarController.h */,
 				7E056E451B623FB9007513EF /* UITabBarController+MyTabBarController.m */,
+				7E056E4F1B67217B007513EF /* ImageData.h */,
+				7E056E501B67217B007513EF /* ImageData.m */,
+				7E056E5E1B68B291007513EF /* NotifyProtocol.h */,
 				7E056E3E1B6236E5007513EF /* PhotoFallViewController.h */,
 				7E056E3F1B6236E5007513EF /* PhotoFallViewController.m */,
+				7E056E471B660D11007513EF /* PhotoFallLayout.h */,
+				7E056E481B660D11007513EF /* PhotoFallLayout.m */,
 				7E056E411B623705007513EF /* PhotoWallViewController.h */,
 				7E056E421B623705007513EF /* PhotoWallViewController.m */,
 				7E056E3B1B623170007513EF /* Common.h */,
@@ -238,9 +257,12 @@
 				7E056E3D1B623170007513EF /* Common.m in Sources */,
 				7E056DEC1B621CBD007513EF /* ViewController.m in Sources */,
 				7E056DE91B621CBD007513EF /* AppDelegate.m in Sources */,
+				7E056E491B660D11007513EF /* PhotoFallLayout.m in Sources */,
 				7E056E431B623705007513EF /* PhotoWallViewController.m in Sources */,
 				7E056DE61B621CBD007513EF /* main.m in Sources */,
 				7E056E461B623FB9007513EF /* UITabBarController+MyTabBarController.m in Sources */,
+				7E056E511B67217B007513EF /* ImageData.m in Sources */,
+				7E056E5D1B678986007513EF /* FlickrFetcher.m in Sources */,
 				7E056E401B6236E5007513EF /* PhotoFallViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
