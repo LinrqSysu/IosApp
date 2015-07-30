@@ -9,6 +9,7 @@
 #import "PhotoFallViewController.h"
 #import "PhotoFallLayout.h"
 #import "ImageData.h"
+#import "AppDelegate.h"
 #import "Common.h"
 
 @interface PhotoFallViewController ()
@@ -33,7 +34,7 @@
     if (self) {
         self.imageData = [ImageData sharedImageData];
         
-        CGRect frame = CGRectMake(4,6 + [Common globalStatusBarHeight], [Common globalWidth]-8, self.viewHeight - 6);
+        CGRect frame = CGRectMake(4,6 + [Common globalStatusBarHeight], [Common globalWidth]-10, self.viewHeight - 6);
         
         NSLog(@"before collectionView initWithFrame");
         //初始化layout
@@ -93,7 +94,7 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView
      numberOfItemsInSection:(NSInteger)section {
-    NSLog(@"number of items in section=%lu", (unsigned long)[self.imageData.imageHeights count]);
+    NSLog(@"imageHeights.count as numberOfItemsInSection=%lu, thread=%@", (unsigned long)[self.imageData.imageHeights count], [NSThread currentThread]);
     return [self.imageData.imageHeights count];
 }
 
@@ -119,8 +120,28 @@
 -(void) notifyDownloadFinished:(NSError *)error
 {
     NSLog(@"receive download finished notify, to reloadData");
+    self.collectionView.contentInset = UIEdgeInsetsMake(1, 1, 1, 0);
     [self.collectionView reloadData];
 }
 
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    CGPoint newOffset = CGPointMake(0, self.collectionView.contentOffset.y);
+    scrollView.contentOffset = newOffset;
+}
+
+- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+{
+    AppDelegate* appDelegate = [UIApplication sharedApplication].delegate;
+    if (scrollView.contentOffset.y < -3)
+    {
+        NSLog(@"need to refresh");
+        [appDelegate startRefresh];
+    }
+    else if (scrollView.contentOffset.y + scrollView.frame.size.height > scrollView.contentSize.height + 3 )
+    {
+        NSLog(@"need to continue_download");
+        [appDelegate continueDownload];
+    }
+}
 
 @end

@@ -37,7 +37,8 @@
     
     NSLog(@"begin prepareLayout, imageHeights.count=%lu", [[ImageData sharedImageData].imageHeights count]);
     self.maxHeight = self.collectionView.frame.size.height;
-    for ( NSUInteger i = 0; i < [[ImageData sharedImageData].imageHeights count]; i++)
+    NSUInteger count = [[ImageData sharedImageData].imageHeights count];
+    for ( NSUInteger i = 0; i < count; i++)
     {
         if (i < 3) [self.cellY addObject:[NSNumber numberWithFloat:self.inset.top]];
         else
@@ -63,7 +64,7 @@
                              
 - (NSArray *)layoutAttributesForElementsInRect:(CGRect)rect
 {
-    NSLog(@"begin layoutAttributesForElementsInRect, imageHeights.count=%lu, cellY.count=%lu", [[ImageData sharedImageData].imageHeights count], (unsigned long)[self.cellY count]);
+    NSLog(@"ForElementsInRect, imageHeights.count=%lu, cellY.count=%lu, thread=%@", [[ImageData sharedImageData].imageHeights count], (unsigned long)[self.cellY count], [NSThread currentThread]);
      NSMutableArray *attributes = [NSMutableArray array];
      for (int i = 0; i < self.cellY.count; i++) {
          NSIndexPath *index = [NSIndexPath indexPathForRow:i inSection:0];
@@ -74,8 +75,14 @@
                              
 - (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"begin layoutAttributesForItemAtIndexPath, indexPath.item=%lu, imageHeights.count=%lu, cellY.count=%lu", (unsigned long)indexPath.item, [[ImageData sharedImageData].imageHeights count], [self.cellY count]);
+    NSLog(@"ForItemAtIndexPath, indexPath.item=%lu, imageHeights.count=%lu, cellY.count=%lu", (unsigned long)indexPath.item, [[ImageData sharedImageData].imageHeights count], [self.cellY count]);
     int i = (int)indexPath.item;
+    if( i >= [self.cellY count] || i >= [[ImageData sharedImageData].imageHeights count])
+    {
+        NSLog(@"invalid index, i=%d", i);
+        return nil;
+    }
+    
     UICollectionViewLayoutAttributes *attributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
     attributes.frame = CGRectMake(self.inset.left + (self.itermSpace + self.itermWidth) * (i % 3),
                                    ((NSNumber *)self.cellY[i]).floatValue + [Common globalStatusBarHeight],

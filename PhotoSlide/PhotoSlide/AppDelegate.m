@@ -14,6 +14,7 @@
 
 @interface AppDelegate ()
 @property (strong, nonatomic) NSURLSession *flickrDownloadSession;
+@property (strong, nonatomic) NSMutableArray *photoList;
 @end
 
 @implementation AppDelegate
@@ -103,6 +104,34 @@
     return array[0];
 }
 
+- (void)DownLoadBetweenIndex
+{
+    //下载从_currentIndex到_endIndex之间的图片，注：不包含下标为_endIndex的图片
+    for ( ; _currentIndex < _endIndex; _currentIndex++ )
+    {
+        NSDictionary *photoDictionary = _photoList[_currentIndex];
+        
+        NSString *unique = photoDictionary[FLICKR_PHOTO_ID];
+        NSString *imageUrl = [[FlickrFetcher URLforPhoto:photoDictionary format:FlickrPhotoFormatSquare] absoluteString];
+        
+        //判断文件是否已经存在了，若已存在了，直接通知
+        NSString *savePath = [NSString stringWithFormat:@"%@/%@", self.imageDirectory, unique];
+        if( [[NSFileManager defaultManager] fileExistsAtPath:savePath] )
+        {
+            NSLog(@"current image file existed, unique = %@ savePath=%@", unique, savePath);
+            [[ImageData sharedImageData] saveFile:savePath];
+            continue;
+        }
+        
+        NSLog(@"before download single image: unique = %@, imageUrl=%@", unique, imageUrl);
+        
+        NSURL* url = [NSURL URLWithString:imageUrl];
+        NSURLSessionDownloadTask *task = [self.flickrDownloadSession downloadTaskWithURL:url];
+        task.taskDescription = [unique stringByAppendingString: FLICKR_FETCH_IMAGE];
+        [task resume];
+    }
+}
+
 - (void)URLSession:(NSURLSession *)session
       downloadTask:(NSURLSessionDownloadTask *)downloadTask
 didFinishDownloadingToURL:(NSURL *)localFile
@@ -110,38 +139,16 @@ didFinishDownloadingToURL:(NSURL *)localFile
     // we shouldn't assume we're the only downloading going on ...
     if ([downloadTask.taskDescription isEqualToString:FLICKR_FETCH_LIST]) {
         
-        NSLog(@"image list download back");
-        NSArray* photos = [self flickrPhotosAtURL:localFile];
+        _photoList = [[self flickrPhotosAtURL:localFile] mutableCopy];
         
-        //NSLog(@"photos = %@", photos);
+        NSLog(@"image list download back, first time download image");
         
-        int i = 0;
-        for (NSDictionary* photoDictionary in photos)
-        {
-            i++;
-            if( i== 35) break;
-            
-            NSString *unique = photoDictionary[FLICKR_PHOTO_ID];
-            NSString *imageUrl = [[FlickrFetcher URLforPhoto:photoDictionary format:FlickrPhotoFormatSquare] absoluteString];
-            
-            //判断文件是否已经存在了，若已存在了，直接通知
-            NSString *savePath = [NSString stringWithFormat:@"%@/%@", self.imageDirectory, unique];
-            if( [[NSFileManager defaultManager] fileExistsAtPath:savePath] )
-            {
-                //NSLog(@"current image file existed, unique = %@ savePath=%@", unique, savePath);
-                [[ImageData sharedImageData] saveFile:savePath];
-                continue;
-            }
-            
-            //NSLog(@"before download single image: unique = %@, imageUrl=%@", unique, imageUrl);
-            
-            NSURL* url = [NSURL URLWithString:imageUrl];
-            NSURLSessionDownloadTask *task = [self.flickrDownloadSession downloadTaskWithURL:url];
-            task.taskDescription = [unique stringByAppendingString: FLICKR_FETCH_IMAGE];
-            [task resume];
-            
-        }
+        //先下载30张
+        _currentIndex = 0;
+        _endIndex = 30;
+        [self DownLoadBetweenIndex];
     }
+    
     else if([downloadTask.taskDescription hasSuffix:FLICKR_FETCH_IMAGE])
     {
         //获得unique，然后做为文件名，并将数据保存到文件中
@@ -180,7 +187,22 @@ didFinishDownloadingToURL:(NSURL *)localFile
     return _flickrDownloadSession;
 }
 
+-(void) continueDownload
+{
+    _endIndex += 30;
+    if( _endIndex > [_photoList count])
+    {
+        _endIndex = [_photoList count];
+    }
+    NSLog(@"continueDownload, current _endIndex=%lul _photoList.count=%lul", (unsigned long)_endIndex, (unsigned long)[_photoList count]);
+    
+    [self DownLoadBetweenIndex];
+}
 
+-(void) startRefresh
+{
+    [self beginBackgroundDownload];
+}
 
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.

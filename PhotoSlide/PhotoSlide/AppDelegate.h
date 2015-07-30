@@ -16,5 +16,12 @@
 
 @property (strong, nonatomic) NSString *imageDirectory;
 
+@property (nonatomic) NSUInteger currentIndex;
+
+@property (nonatomic) NSUInteger endIndex;
+
+-(void) continueDownload;
+-(void) startRefresh;
+
 @end
 
