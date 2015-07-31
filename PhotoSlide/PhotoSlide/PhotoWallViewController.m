@@ -156,11 +156,11 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 {
     return 30;
 }
-/*设置标题尾的宽度*/
--(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
-{
-    return 30;
-}
+///*设置标题尾的宽度*/
+//-(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+//{
+//    return 30;
+//}
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger) section
 {

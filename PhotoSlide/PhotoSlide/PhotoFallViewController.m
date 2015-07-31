@@ -44,6 +44,8 @@
         //初始化cell
         [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"PHOTO_FALL_CELL_IDENTIFIER"];
         
+        [self.collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"HeaderView"];
+        
         self.collectionView.dataSource = self;
         self.collectionView.delegate = self;
         self.collectionView.backgroundColor = [Common globalBackgroundColor];
@@ -119,6 +121,29 @@
     NSLog(@"end get cell for index path, indexPath.item=%lu", indexPath.item);
     return cell;
 }
+
+- (UICollectionReusableView *) collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
+{
+    UICollectionReusableView *reusableview = nil;
+    
+    if (kind == UICollectionElementKindSectionHeader)
+    {
+        UICollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"HeaderView" forIndexPath:indexPath];
+        
+        UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, headerView.bounds.size.width, headerView.bounds.size.height)];
+        lbl.textAlignment = NSTextAlignmentCenter;
+        lbl.font = [UIFont systemFontOfSize:12];
+        lbl.text = self.title;
+        [lbl setBackgroundColor:[Common globalBackgroundColor]];
+        
+        reusableview = headerView;
+    }
+    
+    reusableview.backgroundColor = [Common globalBackgroundColor];
+    
+    return reusableview;
+}
+
 
 -(void) notifyDownloadFinished:(NSError *)error
 {

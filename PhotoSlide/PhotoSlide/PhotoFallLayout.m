@@ -89,6 +89,16 @@
     NSLog(@"At Index Path_called: index=%d, height=%f", i, attributes.frame.size.height);
     return attributes;
  }
+
+- (UICollectionViewLayoutAttributes *)layoutAttributesForSupplementaryViewOfKind:(NSString *)kind
+                                                                               atIndexPath:(NSIndexPath *)indexPath
+{
+    UICollectionViewLayoutAttributes *attributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:kind withIndexPath:indexPath];
+    
+    attributes.frame = CGRectMake(0, 0, [Common globalWidth], 30);
+    
+    return attributes;
+}
  
 
 @end
