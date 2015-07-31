@@ -152,6 +152,28 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     }
 }
 
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 30;
+}
+/*设置标题尾的宽度*/
+-(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    return 30;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger) section
+{
+    UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, self.view.frame.size.width, 30)];
+    lbl.textAlignment = NSTextAlignmentCenter;
+    lbl.font = [UIFont systemFontOfSize:12];
+    lbl.text = self.title;
+    [lbl setBackgroundColor:[Common globalBackgroundColor]];
+    
+    return lbl;
+}
+
+
 -(void) notifyDownloadFinished:(NSError *)error
 {
     NSLog(@"in_tableview, receive download finished notify, to reloadData");
