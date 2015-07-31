@@ -11,6 +11,7 @@
 #import <UIKit/UIKit.h>
 
 @interface ImageData()
+@property (nonatomic) CGFloat scaleHeight;
 @end
 
 @implementation ImageData
@@ -22,13 +23,37 @@
     
     dispatch_once( &once, ^{
         imageData = [[self alloc] init];
+        imageData.scaleHeight = 0;
     });
     
     return imageData;
 }
 
+- (CGFloat) GetImageScaleHeight: (CGFloat)scaleWidth
+{
+    //若之前计算过了，直接使用
+    if( _scaleHeight > 0 ) return _scaleHeight;
+    
+    //若没有图片数据，则返回一个默认的值
+    if( [_imageUrls count] == 0 )
+    {
+        return TABLE_VIEW_CELL_HEIGHT;
+    }
+    
+    UIImage *image = [UIImage imageNamed: _imageUrls[0]];
+    _scaleHeight = (image.size.height / image.size.width ) * scaleWidth;
+    
+    return _scaleHeight;
+}
+
 - (UIImageView*) imageAtIndex: (NSInteger)index CellSize:(CGRect) bounds
 {
+    if(index >= [self.imageUrls count])
+    {
+        NSLog(@"current index exceed imageUrl array, index=%ld imageUrls.count=%lu", (long)index, (unsigned long)[self.imageUrls count]);
+        return nil;
+    }
+    
     NSString* url = self.imageUrls[index];
     
     UIImage *image = [UIImage imageNamed:url];

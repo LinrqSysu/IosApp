@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface PhotoWallViewController : UIViewController
-@property (nonatomic) CGFloat viewHeight;
+@interface PhotoWallViewController : UITableViewController<UITableViewDataSource, UITableViewDelegate, DownloadNotify>
+-(void) notifyDownloadFinished:(NSError *)error;
+-(instancetype)initWithHeight: (CGFloat)photoViewHeight;
 @end

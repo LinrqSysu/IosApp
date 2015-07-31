@@ -16,7 +16,8 @@
 #define FLICKR_FETCH_LIST @"fetch_list"
 #define FLICKR_FETCH_IMAGE @"fetch_single_image"
 #define GLOBAL_INSET UIEdgeInsetsMake(4, 4, 4, 4)
-#define GLOBAL_ITEM_SPACE 5 
+#define GLOBAL_ITEM_SPACE 5
+#define TABLE_VIEW_CELL_HEIGHT 75 
 
 @interface Common : NSObject
 

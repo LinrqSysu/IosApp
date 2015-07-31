@@ -22,19 +22,18 @@
 @end
 
 @implementation PhotoFallViewController
-@synthesize viewHeight;
 @synthesize dataSource;
 @synthesize delegate;
 @synthesize imageData;
 
-- (instancetype)init
+- (instancetype)initWithHeight: (CGFloat)viewHeight
 {
     self = [super init];
     
     if (self) {
         self.imageData = [ImageData sharedImageData];
         
-        CGRect frame = CGRectMake(4,4 + [Common globalStatusBarHeight], [Common globalWidth]-10, self.viewHeight - 4);
+        CGRect frame = CGRectMake(4,4 + [Common globalStatusBarHeight], [Common globalWidth]-10, viewHeight - 4);
         
         NSLog(@"before collectionView initWithFrame");
         //初始化layout

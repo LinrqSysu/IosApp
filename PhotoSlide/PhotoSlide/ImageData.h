@@ -22,4 +22,5 @@
 - (UIImageView*) imageAtIndex: (NSInteger)index CellSize:(CGRect) bounds;
 - (void) saveFile: (NSString*) savePath;
 - (void)subscribe:(id)observer;
+- (CGFloat) GetImageScaleHeight: (CGFloat)scaleWidth;
 @end
