@@ -12,8 +12,8 @@
 
 @property (atomic) NSInteger currentCellCount;
 @property (nonatomic) UIEdgeInsets inset;
-@property (nonatomic) CGFloat itermWidth;
-@property (nonatomic) CGFloat itermSpace;
+@property (nonatomic) CGFloat itemWidth;
+@property (nonatomic) CGFloat itemSpace;
 @property (nonatomic) CGFloat maxHeight;
 @property (strong, atomic) NSMutableArray *cellY;
 

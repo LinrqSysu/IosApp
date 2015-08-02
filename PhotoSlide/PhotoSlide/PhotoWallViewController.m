@@ -38,8 +38,6 @@
         _frame = CGRectMake(0,4 + [Common globalStatusBarHeight], [Common globalWidth], photoViewHeight - 4);
         self.tableView = [self.tableView initWithFrame:_frame];
         
-        NSLog(@"tableView frame: x=4, y=%f, width=%f, height=%f",4 + [Common globalStatusBarHeight], [Common globalWidth], photoViewHeight - 4);
-        
         [self.tableView registerClass:[UITableViewCell class] forCellReuseIdentifier: @"TABLE_VIEW_CELL_ID"];
         
         self.tableView.dataSource = self;
@@ -97,6 +95,8 @@
     UITableViewCell* cell = [self.tableView dequeueReusableCellWithIdentifier:@"TABLE_VIEW_CELL_ID"];
     
     int row = (int)indexPath.row;
+    
+    //获得图片宽度，并根据宽度等比缩小高度
     CGFloat scaleWidth = ([Common globalWidth] - 5*4 ) / 4;
     CGFloat scaleHeight = [[ImageData sharedImageData] GetImageScaleHeight:scaleWidth];
     
@@ -104,7 +104,7 @@
     NSLog(@"current section=%d row=%d, cell.x=%f, cell.y=%f, cell.width=%f cell.height=%f", (int)indexPath.section, row,
           cell.bounds.origin.x, cell.bounds.origin.y, cell.bounds.size.width, cell.bounds.size.height);
     
-    //一行要展示三张图片
+    //一行要展示四张图片
     for( int i = 0; i < 4; i++ )
     {
         int imageIndex = row * 4 + i;
@@ -156,11 +156,6 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 {
     return 30;
 }
-///*设置标题尾的宽度*/
-//-(CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
-//{
-//    return 30;
-//}
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger) section
 {

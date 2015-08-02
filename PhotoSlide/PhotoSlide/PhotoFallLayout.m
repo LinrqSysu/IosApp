@@ -12,8 +12,8 @@
 
 @implementation PhotoFallLayout
 @synthesize inset;
-@synthesize itermWidth;
-@synthesize itermSpace;
+@synthesize itemWidth;
+@synthesize itemSpace;
 
 - (void)prepareLayout
 {
@@ -21,8 +21,8 @@
     
     // 初始化参数
     inset = GLOBAL_INSET;
-    itermSpace = GLOBAL_ITEM_SPACE;
-    itermWidth = ([Common globalWidth] - inset.left - inset.right - 2 * itermSpace) / 3; // cell宽度
+    itemSpace = GLOBAL_ITEM_SPACE;
+    itemWidth = ([Common globalWidth] - inset.left - inset.right - 2 * itemSpace) / 3; // cell宽度
     
     if (!self.cellY)
     {
@@ -35,13 +35,15 @@
     
     NSLog(@"begin prepareLayout, imageHeights.count=%lu", [[ImageData sharedImageData].imageHeights count]);
     self.maxHeight = self.collectionView.frame.size.height;
-    //NSUInteger count = [[ImageData sharedImageData].imageHeights count];
+    
+    //必须使用上次保存的currentCellCount，不然可能会crash（dataSource和layout中返回的个数不一致)
     for ( NSUInteger i = 0; i < _currentCellCount; i++)
     {
+        //保存每个图片的y坐标
         if (i < 3) [self.cellY addObject:[NSNumber numberWithFloat:self.inset.top]];
         else
         {
-            NSNumber *num = [NSNumber numberWithFloat:self.itermSpace
+            NSNumber *num = [NSNumber numberWithFloat:self.itemSpace
                              + ((NSNumber *)self.cellY[i - 3]).floatValue
                              + [[[ImageData sharedImageData].imageHeights objectAtIndex:i-3] integerValue]];
             
@@ -82,9 +84,9 @@
     }
     
     UICollectionViewLayoutAttributes *attributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
-    attributes.frame = CGRectMake(self.inset.left + (self.itermSpace + self.itermWidth) * (i % 3),
+    attributes.frame = CGRectMake(self.inset.left + (self.itemSpace + self.itemWidth) * (i % 3),
                                    ((NSNumber *)self.cellY[i]).floatValue + [Common globalStatusBarHeight],
-                                   self.itermWidth,
+                                   self.itemWidth,
                                   [[[ImageData sharedImageData].imageHeights objectAtIndex:i] floatValue]);
     NSLog(@"At Index Path_called: index=%d, height=%f", i, attributes.frame.size.height);
     return attributes;

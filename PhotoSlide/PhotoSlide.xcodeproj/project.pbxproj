@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		7E056DE61B621CBD007513EF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E056DE51B621CBD007513EF /* main.m */; };
 		7E056DE91B621CBD007513EF /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E056DE81B621CBD007513EF /* AppDelegate.m */; };
-		7E056DEC1B621CBD007513EF /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E056DEB1B621CBD007513EF /* ViewController.m */; };
 		7E056DF11B621CBD007513EF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7E056DF01B621CBD007513EF /* Images.xcassets */; };
 		7E056DF41B621CBD007513EF /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7E056DF21B621CBD007513EF /* LaunchScreen.xib */; };
 		7E056E001B621CBD007513EF /* PhotoSlideTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 7E056DFF1B621CBD007513EF /* PhotoSlideTests.m */; };
@@ -38,8 +37,6 @@
 		7E056DE51B621CBD007513EF /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		7E056DE71B621CBD007513EF /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		7E056DE81B621CBD007513EF /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
-		7E056DEA1B621CBD007513EF /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		7E056DEB1B621CBD007513EF /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		7E056DF01B621CBD007513EF /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		7E056DF31B621CBD007513EF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		7E056DF91B621CBD007513EF /* PhotoSlideTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PhotoSlideTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -102,26 +99,13 @@
 		7E056DE21B621CBD007513EF /* PhotoSlide */ = {
 			isa = PBXGroup;
 			children = (
-				7E056E5A1B678986007513EF /* FlickrAPIKey.h */,
-				7E056E5B1B678986007513EF /* FlickrFetcher.h */,
-				7E056E5C1B678986007513EF /* FlickrFetcher.m */,
 				7E056DE71B621CBD007513EF /* AppDelegate.h */,
 				7E056DE81B621CBD007513EF /* AppDelegate.m */,
-				7E056E441B623FB9007513EF /* UITabBarController+MyTabBarController.h */,
-				7E056E451B623FB9007513EF /* UITabBarController+MyTabBarController.m */,
-				7E056E4F1B67217B007513EF /* ImageData.h */,
-				7E056E501B67217B007513EF /* ImageData.m */,
-				7E056E5E1B68B291007513EF /* NotifyProtocol.h */,
-				7E056E3E1B6236E5007513EF /* PhotoFallViewController.h */,
-				7E056E3F1B6236E5007513EF /* PhotoFallViewController.m */,
-				7E056E471B660D11007513EF /* PhotoFallLayout.h */,
-				7E056E481B660D11007513EF /* PhotoFallLayout.m */,
-				7E056E411B623705007513EF /* PhotoWallViewController.h */,
-				7E056E421B623705007513EF /* PhotoWallViewController.m */,
-				7E056E3B1B623170007513EF /* Common.h */,
-				7E056E3C1B623170007513EF /* Common.m */,
-				7E056DEA1B621CBD007513EF /* ViewController.h */,
-				7E056DEB1B621CBD007513EF /* ViewController.m */,
+				B7F1BD6A1B6E638700A86E08 /* Datasource */,
+				B7F1BD691B6E636600A86E08 /* Layout */,
+				B7F1BD681B6E633A00A86E08 /* Common */,
+				B7F1BD671B6E630500A86E08 /* Controller */,
+				B7F1BD661B6E62E700A86E08 /* FlickrApi */,
 				7E056DF01B621CBD007513EF /* Images.xcassets */,
 				7E056DF21B621CBD007513EF /* LaunchScreen.xib */,
 				7E056DE31B621CBD007513EF /* Supporting Files */,
@@ -153,6 +137,57 @@
 				7E056DFE1B621CBD007513EF /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		B7F1BD661B6E62E700A86E08 /* FlickrApi */ = {
+			isa = PBXGroup;
+			children = (
+				7E056E5A1B678986007513EF /* FlickrAPIKey.h */,
+				7E056E5B1B678986007513EF /* FlickrFetcher.h */,
+				7E056E5C1B678986007513EF /* FlickrFetcher.m */,
+			);
+			name = FlickrApi;
+			sourceTree = "<group>";
+		};
+		B7F1BD671B6E630500A86E08 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				7E056E441B623FB9007513EF /* UITabBarController+MyTabBarController.h */,
+				7E056E451B623FB9007513EF /* UITabBarController+MyTabBarController.m */,
+				7E056E3E1B6236E5007513EF /* PhotoFallViewController.h */,
+				7E056E3F1B6236E5007513EF /* PhotoFallViewController.m */,
+				7E056E411B623705007513EF /* PhotoWallViewController.h */,
+				7E056E421B623705007513EF /* PhotoWallViewController.m */,
+			);
+			name = Controller;
+			sourceTree = "<group>";
+		};
+		B7F1BD681B6E633A00A86E08 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				7E056E5E1B68B291007513EF /* NotifyProtocol.h */,
+				7E056E3B1B623170007513EF /* Common.h */,
+				7E056E3C1B623170007513EF /* Common.m */,
+			);
+			name = Common;
+			sourceTree = "<group>";
+		};
+		B7F1BD691B6E636600A86E08 /* Layout */ = {
+			isa = PBXGroup;
+			children = (
+				7E056E471B660D11007513EF /* PhotoFallLayout.h */,
+				7E056E481B660D11007513EF /* PhotoFallLayout.m */,
+			);
+			name = Layout;
+			sourceTree = "<group>";
+		};
+		B7F1BD6A1B6E638700A86E08 /* Datasource */ = {
+			isa = PBXGroup;
+			children = (
+				7E056E4F1B67217B007513EF /* ImageData.h */,
+				7E056E501B67217B007513EF /* ImageData.m */,
+			);
+			name = Datasource;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -255,7 +290,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				7E056E3D1B623170007513EF /* Common.m in Sources */,
-				7E056DEC1B621CBD007513EF /* ViewController.m in Sources */,
 				7E056DE91B621CBD007513EF /* AppDelegate.m in Sources */,
 				7E056E491B660D11007513EF /* PhotoFallLayout.m in Sources */,
 				7E056E431B623705007513EF /* PhotoWallViewController.m in Sources */,
@@ -452,6 +486,7 @@
 				7E056E051B621CBD007513EF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		7E056E061B621CBD007513EF /* Build configuration list for PBXNativeTarget "PhotoSlideTests" */ = {
 			isa = XCConfigurationList;
@@ -460,6 +495,7 @@
 				7E056E081B621CBD007513EF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

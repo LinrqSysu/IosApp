@@ -35,10 +35,10 @@
         
         CGRect frame = CGRectMake(4,4 + [Common globalStatusBarHeight], [Common globalWidth]-10, viewHeight - 4);
         
-        NSLog(@"before collectionView initWithFrame");
         //初始化layout
         _photoFallLayout = [[PhotoFallLayout alloc] init];
         
+        //初始化view
         self.collectionView = [[UICollectionView alloc] initWithFrame:frame collectionViewLayout:_photoFallLayout];
         
         //初始化cell
@@ -53,7 +53,6 @@
         [self.imageData subscribe:self];
         
         NSLog(@"end init");
-        //[self.view addSubview:self.fallView];
     }
     
     return self;
@@ -62,28 +61,6 @@
 - (void)viewDidLoad {
     NSLog(@"before super viewDidLoad");
     [super viewDidLoad];
-    
-//    self.imageData = [ImageData sharedImageData];
-//    
-//    CGRect frame = CGRectMake(4,4, [Common globalWidth], self.viewHeight);
-//    
-//    NSLog(@"before collectionView initWithFrame");
-//    //初始化layout
-//    PhotoFallLayout *photoFallLayout = [[PhotoFallLayout alloc] init];
-//    
-//    if (photoFallLayout) {
-//        NSLog(@"layout is nil");
-//    }
-//    self.fallView = [[UICollectionView alloc] initWithFrame:frame collectionViewLayout:photoFallLayout];
-//    NSLog(@"after collectionView initWithFrame");
-//    
-//    //初始化cell
-//    [self.fallView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"PHOTO_FALL_CELL_IDENTIFIER"];
-//    
-//    self.fallView.dataSource = self;
-//    self.fallView.delegate = self;
-//    
-//    [self.view addSubview:self.fallView];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -92,7 +69,6 @@
 }
 
 #pragma mark - dataSource
-
 - (NSInteger)collectionView:(UICollectionView *)collectionView
      numberOfItemsInSection:(NSInteger)section {
     NSLog(@"imageHeights.count as numberOfItemsInSection=%lu, thread=%@", (unsigned long)[self.imageData.imageHeights count], [NSThread currentThread]);
@@ -152,6 +128,7 @@
     [self.collectionView reloadData];
 }
 
+#pragma ScrollView deletegate
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     CGPoint newOffset = CGPointMake(0, self.collectionView.contentOffset.y);
     scrollView.contentOffset = newOffset;
@@ -162,11 +139,13 @@
     AppDelegate* appDelegate = [UIApplication sharedApplication].delegate;
     if (scrollView.contentOffset.y < -3)
     {
+        //上拉刷新
         NSLog(@"need to refresh");
         [appDelegate startRefresh];
     }
     else if (scrollView.contentOffset.y + scrollView.frame.size.height > scrollView.contentSize.height + 3 )
     {
+        //下拉更新
         NSLog(@"need to continue_download");
         [appDelegate continueDownload];
     }

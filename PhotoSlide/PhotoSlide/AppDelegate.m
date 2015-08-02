@@ -15,14 +15,13 @@
 @interface AppDelegate ()
 @property (strong, nonatomic) NSURLSession *flickrDownloadSession;
 @property (strong, nonatomic) NSMutableArray *photoList;
-@property (atomic) int activeNetCount;
+@property (atomic) int activeNetCount; //用于显示是否当前有下载网络任务
 @end
 
 @implementation AppDelegate
 
 - (void)createImageArchive
 {
-    NSLog(@"begin createImageArchive");
     NSArray *cachePath = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
     NSString *imagePath = [[cachePath objectAtIndex:0] stringByAppendingString:@"/Image"];
     NSError *mkdirError;
@@ -43,13 +42,12 @@
 {
     //先开启后台下载
     NSLog(@"begin startFlickrFetch");
+    
+    //设置网络标志
     _activeNetCount = 0;
-    // getTasksWithCompletionHandler: is ASYNCHRONOUS
-    // but that's okay because we're not expecting startFlickrFetch to do anything synchronously anyway
+    
     [self.flickrDownloadSession getTasksWithCompletionHandler:^(NSArray *dataTasks, NSArray *uploadTasks, NSArray *downloadTasks) {
-        // let's see if we're already working on a fetch ...
         if (![downloadTasks count]) {
-            // ... not working on a fetch, let's start one up
             NSURLSessionDownloadTask *task = [self.flickrDownloadSession downloadTaskWithURL:[FlickrFetcher URLforRecentGeoreferencedPhotos]];
             task.taskDescription = FLICKR_FETCH_LIST;
             
@@ -60,7 +58,6 @@
             
             NSLog(@"begin downloadtask with image list");
         } else {
-            // ... we are working on a fetch (let's make sure it (they) is (are) running while we're here)
             for (NSURLSessionDownloadTask *task in downloadTasks) [task resume];
         }
     }];
@@ -71,6 +68,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
+    //先初始化文件存储
     [self createImageArchive];
    
     //根据可视面积初始化 TabBarController
@@ -88,10 +86,11 @@
     return YES;
 }
 
+//获得待下载的url列表
 - (NSArray *)flickrPhotosAtURL:(NSURL *)url
 {
     NSDictionary *flickrPropertyList;
-    NSData *flickrJSONData = [NSData dataWithContentsOfURL:url];  // will block if url is not local!
+    NSData *flickrJSONData = [NSData dataWithContentsOfURL:url];
     if (flickrJSONData) {
         flickrPropertyList = [NSJSONSerialization JSONObjectWithData:flickrJSONData
                                                              options:0
@@ -100,7 +99,7 @@
     return [flickrPropertyList valueForKeyPath:FLICKR_RESULTS_PHOTOS];
 }
 
-#pragma mark - NSURLSessionDownloadDelegate
+//获得图片的唯一ID
 - (NSString*) GetUnique:(NSString*)discription
 {
     NSArray* array = [discription componentsSeparatedByString: FLICKR_FETCH_IMAGE];
@@ -123,16 +122,18 @@
         if( [[NSFileManager defaultManager] fileExistsAtPath:savePath] )
         {
             NSLog(@"current image file existed, unique = %@ savePath=%@", unique, savePath);
-            [[ImageData sharedImageData] saveFile:savePath];
+            [[ImageData sharedImageData] saveFileAndNotify:savePath];
             continue;
         }
         
         NSLog(@"before download single image: unique = %@, imageUrl=%@", unique, imageUrl);
         
+        //若不存在，则异步下载
         NSURL* url = [NSURL URLWithString:imageUrl];
         NSURLSessionDownloadTask *task = [self.flickrDownloadSession downloadTaskWithURL:url];
         task.taskDescription = [unique stringByAppendingString: FLICKR_FETCH_IMAGE];
         
+        //设置网络下载标志
         _activeNetCount++;
        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
         
@@ -144,7 +145,7 @@
       downloadTask:(NSURLSessionDownloadTask *)downloadTask
 didFinishDownloadingToURL:(NSURL *)localFile
 {
-    // we shouldn't assume we're the only downloading going on ...
+    //若为第一次下载图片url列表请求返回了
     if ([downloadTask.taskDescription isEqualToString:FLICKR_FETCH_LIST])
     {
         _activeNetCount--;
@@ -159,17 +160,18 @@ didFinishDownloadingToURL:(NSURL *)localFile
         _endIndex = 30;
         [self DownLoadBetweenIndex];
     }
-    
+    //若为下载单张图片
     else if([downloadTask.taskDescription hasSuffix:FLICKR_FETCH_IMAGE])
     {
         //获得unique，然后做为文件名，并将数据保存到文件中
         NSString* unique = [self GetUnique: downloadTask.taskDescription];
         
+        //获得保存文件的路径
         NSString *savePath = [NSString stringWithFormat:@"%@/%@", self.imageDirectory, unique];
         
-        //NSLog(@"unique=%@, savePath=%@", unique, savePath);
         _activeNetCount--;
         
+        //保存文件
         NSError *mvError = nil;
         [[NSFileManager defaultManager] moveItemAtPath:[localFile path] toPath:savePath error:&mvError];
         if (mvError) {
@@ -177,10 +179,12 @@ didFinishDownloadingToURL:(NSURL *)localFile
         }
         else
         {
-            [[ImageData sharedImageData] saveFile:savePath];
+            //保存到imageData单例中，并且通知ui更新
+            [[ImageData sharedImageData] saveFileAndNotify:savePath];
         }
     }
     
+    //根据下载是否完成设置网络标识
     if( _activeNetCount > 0 )
     {
        [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
@@ -191,26 +195,27 @@ didFinishDownloadingToURL:(NSURL *)localFile
     }
 }
 
-- (NSURLSession *)flickrDownloadSession // the NSURLSession we will use to fetch Flickr data in the background
+//生成一个后台下载的session
+- (NSURLSession *)flickrDownloadSession
 {
     if (!_flickrDownloadSession) {
-        static dispatch_once_t onceToken; // dispatch_once ensures that the block will only ever get executed once per application launch
+        static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
-            // notice the configuration here is "backgroundSessionConfiguration:"
-            // that means that we will (eventually) get the results even if we are not the foreground application
-            // even if our application crashed, it would get relaunched (eventually) to handle this URL's results!
             NSURLSessionConfiguration *urlSessionConfig = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:FLICKR_FETCH_ID];
             _flickrDownloadSession = [NSURLSession sessionWithConfiguration:urlSessionConfig
-                                                                   delegate:self    // we MUST have a delegate for background configurations
-                                                              delegateQueue:nil];   // nil means "a random, non-main-queue queue"
+                                                                   delegate:self
+                                                              delegateQueue:nil];
         });
     }
     return _flickrDownloadSession;
 }
 
+//从上次下载的最后处继续下载30张
 -(void) continueDownload
 {
     _endIndex += 30;
+    
+    //防止越界
     if( _endIndex > [_photoList count])
     {
         _endIndex = [_photoList count];
@@ -220,6 +225,7 @@ didFinishDownloadingToURL:(NSURL *)localFile
     [self DownLoadBetweenIndex];
 }
 
+//上拉刷新时，重新开始下载图片url列表
 -(void) startRefresh
 {
     [self beginBackgroundDownload];

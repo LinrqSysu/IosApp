@@ -15,12 +15,11 @@
 @property (strong, atomic) NSMutableArray* imageUrls;
 @property (strong, atomic) NSMutableArray *imageHeights;
 @property (strong, nonatomic) NSMutableArray *notifyDelegates;
-@property (nonatomic) NSInteger count;
 
 + (instancetype) sharedImageData;
 
 - (UIImageView*) imageAtIndex: (NSInteger)index CellSize:(CGRect) bounds;
-- (void) saveFile: (NSString*) savePath;
-- (void)subscribe:(id)observer;
+- (void) saveFileAndNotify: (NSString*) savePath;
+- (void) subscribe:(id)observer;
 - (CGFloat) GetImageScaleHeight: (CGFloat)scaleWidth;
 @end

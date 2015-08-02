@@ -11,11 +11,12 @@
 #import <UIKit/UIKit.h>
 
 @interface ImageData()
-@property (nonatomic) CGFloat scaleHeight;
+@property (nonatomic) CGFloat scaleHeight; //由于下载回来的图片尺寸一致，scaleHeight用于保存缩放后的图片高度
 @end
 
 @implementation ImageData
 
+//单例方法
 + (instancetype) sharedImageData
 {
     static ImageData *imageData;
@@ -29,6 +30,7 @@
     return imageData;
 }
 
+//根据图片缩放后的宽度，得出对应的缩放后的高度
 - (CGFloat) GetImageScaleHeight: (CGFloat)scaleWidth
 {
     //若之前计算过了，直接使用
@@ -46,8 +48,10 @@
     return _scaleHeight;
 }
 
+//从文件中获得单个UIImageView
 - (UIImageView*) imageAtIndex: (NSInteger)index CellSize:(CGRect) bounds
 {
+    //若越界，返回nil，用于在一行不够指定数量图片时
     if(index >= [self.imageUrls count])
     {
         NSLog(@"current index exceed imageUrl array, index=%ld imageUrls.count=%lu", (long)index, (unsigned long)[self.imageUrls count]);
@@ -66,7 +70,7 @@
     return imageView;
 }
 
-- (void) saveFile: (NSString*) savePath
+- (void) saveFileAndNotify: (NSString*) savePath
 {
     //保存url到数组中
     if (self.imageUrls)
@@ -77,6 +81,7 @@
         self.imageUrls = [[NSMutableArray alloc] initWithObjects:savePath, nil];
     }
     
+    //加载图片，获得尺寸
     UIImage *image = [UIImage imageNamed:savePath];
     if (!image) {
         NSLog(@"load image file failed, savePath=%@", savePath);
@@ -97,13 +102,14 @@
         self.imageHeights = [[NSMutableArray alloc] initWithObjects:zoomOutHeight, nil];
     }
     
-    //通知layout更新
+    //到主线程中更新ui
     NSError* error;
     for (id<DownloadNotify> observer in self.notifyDelegates) {
         dispatch_async(dispatch_get_main_queue(), ^{
             [(id<DownloadNotify>)observer notifyDownloadFinished:error];
         });
     }
+    
     NSLog(@"push data called: zoomOutHeight=%@ imageHeights.count=%d now %d images, notify %d views at thread %@",
           zoomOutHeight,
           (int)[self.imageHeights count],
@@ -114,6 +120,7 @@
     return;
 }
 
+//接收订阅，收到图片时，通知订阅者
 - (void)subscribe:(id)observer {
     if (self.notifyDelegates) {
         [self.notifyDelegates addObject:observer];
