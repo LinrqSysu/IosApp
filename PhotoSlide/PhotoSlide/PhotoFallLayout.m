@@ -67,12 +67,6 @@
     NSLog(@"ForElementsInRect, imageHeights.count=%lu, cellY.count=%lu, thread=%@", [[ImageData sharedImageData].imageHeights count], (unsigned long)[self.cellY count], [NSThread currentThread]);
      NSMutableArray *attributes = [NSMutableArray array];
     
-    /*
-    NSIndexPath *headIndex = [NSIndexPath indexPathForItem:0 inSection:0];
-    UICollectionViewLayoutAttributes *headerAttributes = [self layoutAttributesForSupplementaryViewOfKind:UICollectionElementKindSectionHeader atIndexPath:headIndex];
-    [attributes addObject:headerAttributes];
-     */
-    
      for (int i = 0; i < self.cellY.count; i++) {
          NSIndexPath *index = [NSIndexPath indexPathForRow:i inSection:0];
          [attributes addObject:[self layoutAttributesForItemAtIndexPath:index]];
@@ -98,20 +92,6 @@
     NSLog(@"At Index Path_called: index=%d, height=%f", i, attributes.frame.size.height);
     return attributes;
  }
-
-/*
-- (UICollectionViewLayoutAttributes *)layoutAttributesForSupplementaryViewOfKind:(NSString *)kind
-                                                                               atIndexPath:(NSIndexPath *)indexPath
-{
-    NSLog(@"ForSupplementaryView, indexPath.item=%lu, kind=%@", (unsigned long)indexPath.item, kind);
-    
-    UICollectionViewLayoutAttributes *attributes = [UICollectionViewLayoutAttributes layoutAttributesForSupplementaryViewOfKind:kind withIndexPath:indexPath];
-    
-    attributes.frame = CGRectMake(0, 4 + [Common globalStatusBarHeight], [Common globalWidth], 30);
-    
-    return attributes;
-}
-*/
 
 
 @end
