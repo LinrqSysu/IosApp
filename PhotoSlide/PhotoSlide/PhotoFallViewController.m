@@ -18,6 +18,7 @@
 @property (strong, nonatomic) id<UICollectionViewDelegate> delegate;
 @property (strong, nonatomic) PhotoFallLayout* photoFallLayout;
 @property (strong, nonatomic) ImageData* imageData;
+@property (strong, nonatomic) UILabel* lbl;
 
 @end
 
@@ -26,14 +27,15 @@
 @synthesize delegate;
 @synthesize imageData;
 
-- (instancetype)initWithHeight: (CGFloat)viewHeight
+- (instancetype)initWithHeight: (CGFloat)viewHeight Title:(NSString*) title
 {
     self = [super init];
     
     if (self) {
+        
         self.imageData = [ImageData sharedImageData];
         
-        CGRect frame = CGRectMake(4,4 + [Common globalStatusBarHeight], [Common globalWidth]-10, viewHeight - 4);
+        CGRect frame = CGRectMake(4,4 + [Common globalStatusBarHeight] + 30, [Common globalWidth]-10, viewHeight - 34);
         
         //初始化layout
         _photoFallLayout = [[PhotoFallLayout alloc] init];
@@ -44,11 +46,28 @@
         //初始化cell
         [self.collectionView registerClass:[UICollectionViewCell class] forCellWithReuseIdentifier:@"PHOTO_FALL_CELL_IDENTIFIER"];
         
-        [self.collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"HeaderView"];
+        //[self.collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"HeaderView"];
         
         self.collectionView.dataSource = self;
         self.collectionView.delegate = self;
         self.collectionView.backgroundColor = [Common globalBackgroundColor];
+        
+        //仅用于遮挡上方透明的状态栏呵呵
+        UILabel *coverLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, [Common globalWidth], 4 + [Common globalStatusBarHeight])];
+        [coverLabel setBackgroundColor:[Common globalBackgroundColor]];
+        [self.view addSubview:coverLabel];
+        
+        //设置标题栏
+        _lbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 4 + [Common globalStatusBarHeight], [Common globalWidth], 30)];
+        _lbl.textAlignment = NSTextAlignmentCenter;
+        _lbl.font = [UIFont systemFontOfSize:12];
+        _lbl.text = title;
+        [_lbl setBackgroundColor:[Common globalBackgroundColor]];
+        [self.view addSubview:_lbl];
+        
+        self.edgesForExtendedLayout = UIRectEdgeNone;
+        self.extendedLayoutIncludesOpaqueBars = NO;
+        self.modalPresentationCapturesStatusBarAppearance = NO;
         
         [self.imageData subscribe:self];
         
@@ -98,12 +117,16 @@
     return cell;
 }
 
+/*
 - (UICollectionReusableView *) collectionView:(UICollectionView *)collectionView viewForSupplementaryElementOfKind:(NSString *)kind atIndexPath:(NSIndexPath *)indexPath
 {
     UICollectionReusableView *reusableview = nil;
     
+    NSLog(@"viewForSupplementary, kind=%@ indexPath.section=%ld", kind, indexPath.section);
+    
     if (kind == UICollectionElementKindSectionHeader)
     {
+        NSLog(@"kind is header, viewForSupplementary, kind=%@", kind);
         UICollectionReusableView *headerView = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"HeaderView" forIndexPath:indexPath];
         
         UILabel *lbl = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, headerView.bounds.size.width, headerView.bounds.size.height)];
@@ -112,6 +135,8 @@
         lbl.text = self.title;
         [lbl setBackgroundColor:[Common globalBackgroundColor]];
         
+        [headerView addSubview:lbl];
+        
         reusableview = headerView;
     }
     
@@ -119,6 +144,7 @@
     
     return reusableview;
 }
+*/
 
 
 -(void) notifyDownloadFinished:(NSError *)error

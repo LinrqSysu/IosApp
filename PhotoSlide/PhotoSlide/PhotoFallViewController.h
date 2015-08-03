@@ -12,5 +12,5 @@
 @interface PhotoFallViewController : UICollectionViewController<DownloadNotify,UICollectionViewDelegate, UICollectionViewDataSource>
 @property (strong, nonatomic) UICollectionView* fallView;
 -(void) notifyDownloadFinished:(NSError *)error;
-- (instancetype)initWithHeight: (CGFloat)viewHeight;
+- (instancetype)initWithHeight: (CGFloat)viewHeight Title:(NSString*) title;
 @end

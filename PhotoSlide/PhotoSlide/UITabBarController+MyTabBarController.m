@@ -17,8 +17,7 @@
 {
     self = [self init];
     
-    PhotoFallViewController *photoFallController = [[PhotoFallViewController alloc] initWithHeight:viewHeight];
-    photoFallController.title = @"瀑布流";
+    PhotoFallViewController *photoFallController = [[PhotoFallViewController alloc] initWithHeight:viewHeight Title:@"瀑布流"];
     photoFallController.tabBarItem = [[UITabBarItem alloc] initWithTitle:@"瀑布流" image:nil tag:0];
     photoFallController.tabBarItem.titlePositionAdjustment = UIOffsetMake(0.0, TAB_BAR_ITEM_TITLE_OFFSET);
     

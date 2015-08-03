@@ -22,6 +22,8 @@
 
 - (void)createImageArchive
 {
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    
     NSArray *cachePath = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
     NSString *imagePath = [[cachePath objectAtIndex:0] stringByAppendingString:@"/Image"];
     NSError *mkdirError;
