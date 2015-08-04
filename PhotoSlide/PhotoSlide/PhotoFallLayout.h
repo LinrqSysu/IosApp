@@ -10,11 +10,12 @@
 
 @interface PhotoFallLayout : UICollectionViewLayout
 
-@property (atomic) NSInteger currentCellCount;
+@property (nonatomic) BOOL useSearch;
 @property (nonatomic) UIEdgeInsets inset;
 @property (nonatomic) CGFloat itemWidth;
 @property (nonatomic) CGFloat itemSpace;
 @property (nonatomic) CGFloat maxHeight;
+@property (nonatomic) CGFloat minHeight;
 @property (strong, atomic) NSMutableArray *cellY;
 
 

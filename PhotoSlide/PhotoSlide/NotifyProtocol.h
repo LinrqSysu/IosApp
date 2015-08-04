@@ -11,6 +11,6 @@
 @protocol DownloadNotify <NSObject>
 @optional
 
--(void) notifyDownloadFinished:(NSError *)error;
+-(void) notifyDownloadFinished:(NSString*)filename Error:(NSError *)error;
 
 @end

@@ -67,7 +67,7 @@
 
 
 #pragma mark - dataSource
-- (NSInteger)tableView:(UITableView *)tableView numberOfSectionsInTableView:(UITableView *)tableView
+- (NSInteger) numberOfSectionsInTableView:(UITableView *)tableView
 {
     NSLog(@"numberOfSectionsInTableView return 1");
     return 1;
@@ -169,7 +169,7 @@ heightForRowAtIndexPath:(NSIndexPath *)indexPath {
 }
 
 
--(void) notifyDownloadFinished:(NSError *)error
+-(void) notifyDownloadFinished:(NSString*)filename Error:(NSError *)error
 {
     NSLog(@"in_tableview, receive download finished notify, to reloadData");
     [self.tableView reloadData];

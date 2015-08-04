@@ -124,7 +124,7 @@
         if( [[NSFileManager defaultManager] fileExistsAtPath:savePath] )
         {
             NSLog(@"current image file existed, unique = %@ savePath=%@", unique, savePath);
-            [[ImageData sharedImageData] saveFileAndNotify:savePath];
+            [[ImageData sharedImageData] saveFileAndNotify:savePath UniqueId:unique];
             continue;
         }
         
@@ -159,7 +159,7 @@ didFinishDownloadingToURL:(NSURL *)localFile
         
         //先下载30张
         _currentIndex = 0;
-        _endIndex = 30;
+        _endIndex = IMAGE_LOAD_BEGIN_NUM;
         [self DownLoadBetweenIndex];
     }
     //若为下载单张图片
@@ -182,7 +182,7 @@ didFinishDownloadingToURL:(NSURL *)localFile
         else
         {
             //保存到imageData单例中，并且通知ui更新
-            [[ImageData sharedImageData] saveFileAndNotify:savePath];
+            [[ImageData sharedImageData] saveFileAndNotify:savePath UniqueId:unique];
         }
     }
     
@@ -215,7 +215,7 @@ didFinishDownloadingToURL:(NSURL *)localFile
 //从上次下载的最后处继续下载30张
 -(void) continueDownload
 {
-    _endIndex += 30;
+    _endIndex += IMAGE_LOAD_STEP_NUM;
     
     //防止越界
     if( _endIndex > [_photoList count])

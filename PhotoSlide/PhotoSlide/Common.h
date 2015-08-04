@@ -18,6 +18,10 @@
 #define GLOBAL_INSET                    UIEdgeInsetsMake(4, 4, 4, 4)
 #define GLOBAL_ITEM_SPACE               5
 #define TABLE_VIEW_CELL_HEIGHT          75
+#define TITLE_FIELD_HEIGHT              30
+#define SEARCH_BAR_HEIGHT               40
+#define IMAGE_LOAD_BEGIN_NUM            1
+#define IMAGE_LOAD_STEP_NUM             3
 
 @interface Common : NSObject
 

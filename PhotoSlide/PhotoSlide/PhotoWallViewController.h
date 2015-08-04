@@ -9,6 +9,6 @@
 #import <UIKit/UIKit.h>
 
 @interface PhotoWallViewController : UITableViewController<UITableViewDataSource, UITableViewDelegate, DownloadNotify>
--(void) notifyDownloadFinished:(NSError *)error;
+-(void) notifyDownloadFinished:(NSString*)filename Error:(NSError *)error;
 -(instancetype)initWithHeight: (CGFloat)photoViewHeight;
 @end

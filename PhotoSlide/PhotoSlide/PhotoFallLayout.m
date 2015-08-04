@@ -9,12 +9,16 @@
 #import "Common.h"
 #import "ImageData.h"
 #import "PhotoFallLayout.h"
+#import "PhotoFallViewController.h"
 
 @implementation PhotoFallLayout
 @synthesize inset;
 @synthesize itemWidth;
 @synthesize itemSpace;
 
+
+
+#pragma layout
 - (void)prepareLayout
 {
     [super prepareLayout];
@@ -33,32 +37,63 @@
         [self.cellY removeAllObjects];
     }
     
-    NSLog(@"begin prepareLayout, imageHeights.count=%lu", [[ImageData sharedImageData].imageHeights count]);
     self.maxHeight = self.collectionView.frame.size.height;
     
-    //必须使用上次保存的currentCellCount，不然可能会crash（dataSource和layout中返回的个数不一致)
-    for ( NSUInteger i = 0; i < _currentCellCount; i++)
+    PhotoFallViewController *controller = self.collectionView.delegate;
+    if( controller.searchFlag && controller.searchBar.text != nil)
     {
+        _useSearch = YES;
+    }
+    else
+    {
+        _useSearch = NO;
+    }
+    
+    NSInteger count = 0;
+    if( _useSearch )
+    {
+        count = [[ImageData sharedImageData] getImageCountMatchSearch: controller.searchBar.text];
+    }
+    else
+    {
+        count = [[ImageData sharedImageData] getImageCount];
+    }
+    
+    NSLog(@"begin_prepareLayout, _useSearch=%d count =%ld imageUrls.count=%lu thread=%@", _useSearch, count,  [[ImageData sharedImageData].imageUrls count],[NSThread currentThread]);
+   
+    for ( NSUInteger i = 0; i < count; i++)
+    {
+        //根据当前的cell index，找到对应的image index
+        NSUInteger currentRowImageIndex = [[ImageData sharedImageData] getImageIndex: i UseSearch:_useSearch];
+        NSUInteger lastRowImageIndex = [[ImageData sharedImageData] getImageIndex: i-3 UseSearch:_useSearch];
+        
         //保存每个图片的y坐标
-        if (i < 3) [self.cellY addObject:[NSNumber numberWithFloat:(self.inset.top + 30)]];
+        if (i < 3) [self.cellY addObject:[NSNumber numberWithFloat:(self.inset.top + 30 + SEARCH_BAR_HEIGHT)]];
         else
         {
             NSNumber *num = [NSNumber numberWithFloat:self.itemSpace
                              + ((NSNumber *)self.cellY[i - 3]).floatValue
-                             + [[[ImageData sharedImageData].imageHeights objectAtIndex:i-3] integerValue]];
+                             + [[[ImageData sharedImageData].imageHeights objectAtIndex:lastRowImageIndex] integerValue]];
             
             [self.cellY addObject:num];
-            self.maxHeight = MAX(self.maxHeight, [num floatValue] + [[[ImageData sharedImageData].imageHeights objectAtIndex:i] floatValue]);
+            self.maxHeight = MAX(self.maxHeight, [num floatValue] + [[[ImageData sharedImageData].imageHeights objectAtIndex:currentRowImageIndex] floatValue]);
             
-            NSLog(@"current i=%lu num=%ld maxHeight=%f", (unsigned long)i, (long)[num integerValue], self.maxHeight);
+            NSLog(@"current i=%lu currentRowImageIndex=%lu lastRowImageIndex=%lu num=%ld maxHeight=%f", (unsigned long)i, currentRowImageIndex, lastRowImageIndex, (long)[num integerValue], self.maxHeight);
         }
+        
+        //获得最后三个cell中，heigth最小的一个 FIXME
+        _minHeight = _maxHeight;
     }
+    
+    NSLog(@"end prepareLayout, cellY.count=%lu", [_cellY count]);
 }
 
 - (CGSize)collectionViewContentSize
 {
     CGSize contentSize = CGSizeMake(self.collectionView.frame.size.width, self.maxHeight + inset.bottom + inset.top);
     NSLog(@"current collectionViewContentSize.height=%f", contentSize.height);
+    
+    //FIXME 可在这里判断，若minHeight比较小，可以触发更新
     return contentSize;
 }
                              
@@ -76,7 +111,7 @@
                              
 - (UICollectionViewLayoutAttributes *)layoutAttributesForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"ForItemAtIndexPath, indexPath.item=%lu, imageHeights.count=%lu, cellY.count=%lu", (unsigned long)indexPath.item, [[ImageData sharedImageData].imageHeights count], [self.cellY count]);
+    //NSLog(@"ForItemAtIndexPath, indexPath.item=%lu, imageHeights.count=%lu, cellY.count=%lu", (unsigned long)indexPath.item, [[ImageData sharedImageData].imageHeights count], [self.cellY count]);
     int i = (int)indexPath.item;
     if( i >= [self.cellY count] || i >= [[ImageData sharedImageData].imageHeights count])
     {
@@ -84,11 +119,14 @@
         return nil;
     }
     
+    NSUInteger imageIndex = [[ImageData sharedImageData] getImageIndex:i UseSearch:_useSearch];
+    NSLog(@"layoutAttributesForItemAtIndexPath _useSearch=%d cellindex=%d imageIndex=%lu imageHeight.cout=%lu", _useSearch, i, imageIndex, [[ImageData sharedImageData].imageHeights count]);
+    
     UICollectionViewLayoutAttributes *attributes = [UICollectionViewLayoutAttributes layoutAttributesForCellWithIndexPath:indexPath];
     attributes.frame = CGRectMake(self.inset.left + (self.itemSpace + self.itemWidth) * (i % 3),
                                    ((NSNumber *)self.cellY[i]).floatValue + [Common globalStatusBarHeight],
                                    self.itemWidth,
-                                  [[[ImageData sharedImageData].imageHeights objectAtIndex:i] floatValue]);
+                                  [[[ImageData sharedImageData].imageHeights objectAtIndex:imageIndex] floatValue]);
     NSLog(@"At Index Path_called: index=%d, height=%f", i, attributes.frame.size.height);
     return attributes;
  }

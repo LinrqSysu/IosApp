@@ -19,7 +19,14 @@
 + (instancetype) sharedImageData;
 
 - (UIImageView*) imageAtIndex: (NSInteger)index CellSize:(CGRect) bounds;
-- (void) saveFileAndNotify: (NSString*) savePath;
+- (void) removeImageAtIndex: (NSInteger)index;
+- (void) saveFileAndNotify: (NSString*) savePath UniqueId:(NSString*)unique;
 - (void) subscribe:(id)observer;
 - (CGFloat) GetImageScaleHeight: (CGFloat)scaleWidth;
+- (NSInteger) getImageCountMatchSearch: (NSString*) searchText;
+- (NSInteger) getImageCount;
+
+-(void) setImageIndexMap:(NSArray *)imageIndexArray;
+-(NSUInteger) removeImageIndexAt:(NSUInteger) i;
+-(NSUInteger) getImageIndex:(NSUInteger) i UseSearch:(BOOL)useSearch;
 @end
